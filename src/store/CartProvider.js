@@ -7,21 +7,33 @@ const defaultCartState = {
 };
 
 const cartReducer = (state, action) => {
-  // console.log("reducer") ;
   if (action.type === "ADD") {
-    // console.log("called") ;
-    const updatedItems = state.items.concat(action.item);
     const updatedTotalAmount =
       state.totalAmount + action.item.price * action.item.amount;
 
-    //  console.log(updatedTotalAmount) ;  
+    const existingItemIndex = state.items.findIndex(
+      (item) => item.id === action.item.id
+    );
+
+    const existingItem = state.items[existingItemIndex];
+
+    let updatedItems;
+    if (existingItem) {
+      const updatedItem = {
+        ...existingItem,
+        amount: existingItem.amount + action.item.amount,
+      };
+      updatedItems = [...state.items];
+      updatedItems[existingItemIndex] = updatedItem;
+    }else{
+      updatedItems = state.items.concat(action.item);
+    }
 
     return {
       items: updatedItems,
       totalAmount: updatedTotalAmount,
-    }; 
+    };
   }
-  // console.log(defaultCartState) ;
   return defaultCartState;
 };
 
@@ -32,7 +44,6 @@ const CartProvider = (props) => {
   );
 
   const addItemToCartHandler = (item) => {
-    // console.log("handler") ;
     dispatchCartAction({ type: "ADD", item: item });
   };
 
