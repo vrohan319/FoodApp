@@ -7,17 +7,22 @@ const defaultCartState = {
 };
 
 const cartReducer = (state, action) => {
-  if (action === "ADD") {
-    const updatedItems = state.item.concate(action.item);
+  // console.log("reducer") ;
+  if (action.type === "ADD") {
+    // console.log("called") ;
+    const updatedItems = state.items.concat(action.item);
     const updatedTotalAmount =
-      state.item.totalAmount + action.item.price * action.item.amount;
+      state.totalAmount + action.item.price * action.item.amount;
+
+    // console.log(updatedItems) ;  
 
     return {
-      item: updatedItems,
+      items: updatedItems,
       totalAmount: updatedTotalAmount,
-    };
+    }; 
   }
-  return defaultCartState ;
+  // console.log(defaultCartState) ;
+  return defaultCartState;
 };
 
 const CartProvider = (props) => {
@@ -27,6 +32,7 @@ const CartProvider = (props) => {
   );
 
   const addItemToCartHandler = (item) => {
+    // console.log("handler") ;
     dispatchCartAction({ type: "ADD", item: item });
   };
 
