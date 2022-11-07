@@ -7,7 +7,6 @@ const AvailableMeals = () => {
   const [meals, setMeals] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState();
-  // const errorMesssage = "" ;
   useEffect(() => {
     const fetchMeals = async () => {
       setIsLoading(true);
