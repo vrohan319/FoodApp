@@ -5,12 +5,18 @@ import MealItem from "./MealsItem/MealItem";
 
 const AvailableMeals = () => {
   const [meals, setMeals] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState();
+  // const errorMesssage = "" ;
   useEffect(() => {
     const fetchMeals = async () => {
+      setIsLoading(true);
       const response = await fetch(
         "https://react-project-udemy-5e56b-default-rtdb.firebaseio.com/meals.json"
       );
+      if (!response.ok) {
+        throw new Error("Something is Wrong.");
+      }
       const responseData = await response.json();
       const loadedMeals = [];
       for (const key in responseData) {
@@ -22,9 +28,14 @@ const AvailableMeals = () => {
           price: responseData[key].price,
         });
       }
+      setIsLoading(false);
       setMeals(loadedMeals);
     };
-    fetchMeals();
+
+    fetchMeals().catch((error) => {
+      setHasError(true);
+      setIsLoading(false);
+    });
   }, []);
 
   const mealsList = meals.map((meal) => {
@@ -38,10 +49,20 @@ const AvailableMeals = () => {
       />
     );
   });
+
+  let content;
+  if (isLoading) {
+    content = <p>Loading...</p>;
+  } else if (hasError) {
+    content = <p>Something Went Wrong</p>;
+  } else {
+    content = mealsList;
+  }
+
   return (
     <section className={classes.meals}>
       <Card>
-        <ul>{mealsList}</ul>
+        <ul>{content}</ul>
       </Card>
     </section>
   );
